@@ -7,7 +7,7 @@ static class CommandLineHelper
         Console.WriteLine("Options:");
         Console.WriteLine("  -u, --url <url>           Target URL (required)");
         Console.WriteLine("  -n, --number <count>      Number of total requests (default: 100)");
-        Console.WriteLine("  -c, --concurrency <count> Number of concurrent requests (default: 10)");
+        Console.WriteLine("  -conc, --concurrency <count> Number of concurrent requests (default: 10)");
         Console.WriteLine("  -t, --timeout <seconds>   Timeout in seconds (default: 10)");
         Console.WriteLine("  -m, --method <method>     HTTP method (default: GET)");
         Console.WriteLine("  -H, --header <header>     Add header (format: 'key:value')");
@@ -17,7 +17,7 @@ static class CommandLineHelper
         Console.WriteLine("  -h, --help                Show this help message");
         Console.WriteLine();
         Console.WriteLine("Examples:");
-        Console.WriteLine("  LoadTest -u https://example.com -n 1000 -c 20");
+        Console.WriteLine("  LoadTest -u https://example.com -n 1000 -conc 20");
         Console.WriteLine("  LoadTest -u 192.168.1.1:8080 -n 500 -c 50 -m POST -H \"Content-Type:application/json\" -d \"{\\\"key\\\":\\\"value\\\"}\"");
     }
 
