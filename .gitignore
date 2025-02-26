@@ -1,0 +1,66 @@
+# .NET Core / .NET 5 / .NET 6 / .NET 7 / .NET 8
+## User-specific files
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## User-specific JetBrains Rider
+.idea/
+
+## Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+## Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+## Windows Installer logs
+*.cab
+*.vsix
+*.wixpdb
+
+## Windows Store app files
+AppPackages/
+AppStore/
+Output/
+bin/
+obj/
+.vs/
+
+## .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer logs
+*.cab
+*.vsix
+*.wixpdb
+
+# JetBrains Rider
+.idea/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Mac
+.DS_Store
+
+# Linux
+*~
