@@ -33,15 +33,11 @@
 
 1. สร้างสถานการณ์การทดสอบโหลดใหม่:
     ```bash
-    dotnet run create-scenario
+    dotnet run
     ```
 2. ดำเนินการทดสอบโหลด:
     ```bash
-    dotnet run start-test
-    ```
-3. ติดตามผลการทดสอบแบบเรียลไทม์:
-    ```bash
-    dotnet run monitor
+    dotnet run -u https://example.com -n 1000 -conc 20
     ```
 
 ## การมีส่วนร่วม
