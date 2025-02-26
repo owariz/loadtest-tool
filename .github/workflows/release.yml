@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v2  # ตรวจสอบว่ามีการดึงโค้ดออกจาก repository
+        uses: actions/checkout@v2
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.200'  # ปรับเป็นเวอร์ชัน .NET ที่คุณใช้
+          dotnet-version: '9.0.200'
 
       - name: Restore dependencies
         run: dotnet restore
@@ -42,15 +42,21 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the code again (for tag creation)
-        uses: actions/checkout@v2  # ตรวจสอบว่ามีการดึงโค้ดออกจาก repository อีกครั้งเพื่อใช้ git
+      - name: Check out the code
+        uses: actions/checkout@v2
 
-      - name: Create a tag
+      - name: Create a new tag (if not exists)
         run: |
-          VERSION_TAG=$(git describe --tags --abbrev=0)  # ใช้ tag ล่าสุดจาก git
-          git tag -a "v$VERSION_TAG" -m "Release v$VERSION_TAG"
-          git push origin "v$VERSION_TAG"
-      
+          # Check if there are existing tags
+          if git tag | grep -q 'v'; then
+            VERSION_TAG=$(git describe --tags --abbrev=0)  # ใช้ tag ล่าสุดจาก git
+          else
+            VERSION_TAG="v0.0.1"  # ถ้าไม่มี tag ให้ใช้เวอร์ชันเริ่มต้น
+          fi
+          echo "Tag version: $VERSION_TAG"
+          git tag -a "$VERSION_TAG" -m "Release $VERSION_TAG"
+          git push origin "$VERSION_TAG"
+
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         with:
