@@ -198,7 +198,7 @@ class Program
         Console.WriteLine($"│ {"Method:",-15} {config.Method,-42} │");
         Console.WriteLine($"│ {"Total Requests:",-15} {config.NumberOfRequests,-42} │");
         Console.WriteLine($"│ {"Concurrency:",-15} {config.NumberOfConcurrentRequests,-42} │");
-        Console.WriteLine($"│ {"Timeout:",-15} {config.TimeoutSeconds} seconds{new string(' ', 33)} │");
+        Console.WriteLine($"│ {"Timeout:",-15} {config.TimeoutSeconds} sec{new string(' ', 36)} │");
 
         if (config.DelayBetweenRequestsMs > 0)
         {
@@ -219,7 +219,6 @@ class Program
         int inProgressRequests = 0;
         var progressLock = new object();
 
-        // Progress reporting
         var progressTimer = new Timer(_ =>
         {
             lock (progressLock)
@@ -379,12 +378,12 @@ class Program
         Console.WriteLine("├" + new string('─', 60) + "┤");
         Console.ResetColor();
 
-        Console.WriteLine($"│ {"Total time:",-25} {totalTimeMs / 1000.0:F2} seconds{new string(' ', 22)} │");
-        Console.WriteLine($"│ {"Requests per second:",-25} {requestsPerSecond:F2} req/sec{new string(' ', 22)} │");
-        Console.WriteLine($"│ {"Total requests:",-25} {totalRequests}{new string(' ', 33)} │");
+        Console.WriteLine($"│ {"Total time:",-25} {totalTimeMs / 1000.0:F2} seconds{new string(' ', 20)} │");
+        Console.WriteLine($"│ {"Requests per second:",-25} {requestsPerSecond:F2} req/sec{new string(' ', 19)} │");
+        Console.WriteLine($"│ {"Total requests:",-25} {totalRequests}{new string(' ', 30)} │");
 
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"│ {"Successful requests:",-25} {successfulRequests} ({successRate:F1}%){new string(' ', 23)} │");
+        Console.WriteLine($"│ {"Successful requests:",-25} {successfulRequests} ({successRate:F1}%){new string(' ', 21)} │");
         Console.ResetColor();
 
         if (failedRequests > 0)
@@ -404,13 +403,13 @@ class Program
         Console.WriteLine("├" + new string('─', 60) + "┤");
         Console.WriteLine($"│ {"Response Time Statistics:",-58} │");
         Console.WriteLine("├" + new string('─', 60) + "┤");
-        Console.WriteLine($"│ {"Min response time:",-25} {minResponseTime} ms{new string(' ', 30)} │");
-        Console.WriteLine($"│ {"Max response time:",-25} {maxResponseTime} ms{new string(' ', 30)} │");
-        Console.WriteLine($"│ {"Average response time:",-25} {avgResponseTime:F2} ms{new string(' ', 27)} │");
-        Console.WriteLine($"│ {"50th percentile (p50):",-25} {p50} ms{new string(' ', 30)} │");
-        Console.WriteLine($"│ {"90th percentile (p90):",-25} {p90} ms{new string(' ', 30)} │");
-        Console.WriteLine($"│ {"95th percentile (p95):",-25} {p95} ms{new string(' ', 30)} │");
-        Console.WriteLine($"│ {"99th percentile (p99):",-25} {p99} ms{new string(' ', 30)} │");
+        Console.WriteLine($"│ {"Min response time:",-25} {minResponseTime} ms{new string(' ', 26)} │");
+        Console.WriteLine($"│ {"Max response time:",-25} {maxResponseTime} ms{new string(' ', 26)} │");
+        Console.WriteLine($"│ {"Average response time:",-25} {avgResponseTime:F2} ms{new string(' ', 23)} │");
+        Console.WriteLine($"│ {"50th percentile (p50):",-25} {p50} ms{new string(' ', 26)} │");
+        Console.WriteLine($"│ {"90th percentile (p90):",-25} {p90} ms{new string(' ', 26)} │");
+        Console.WriteLine($"│ {"95th percentile (p95):",-25} {p95} ms{new string(' ', 26)} │");
+        Console.WriteLine($"│ {"99th percentile (p99):",-25} {p99} ms{new string(' ', 26)} │");
 
         var statusCodeGroups = resultsList
             .GroupBy(r => r.StatusCode)
@@ -450,7 +449,7 @@ class Program
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
 
-                Console.WriteLine($"│ {"HTTP " + statusCode + ":",-25} {count} ({percentage:F1}%){new string(' ', 23)} │");
+                Console.WriteLine($"│ {"HTTP " + statusCode + ":",-25} {count} ({percentage:F1}%){new string(' ', 21)} │");
                 Console.ResetColor();
             }
         }
