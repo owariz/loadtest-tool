@@ -33,7 +33,7 @@ jobs:
         run: dotnet publish -c Release -r win-x64 --self-contained false --output ./publish
 
       - name: Archive the build output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: LoadTestExe
           path: ./publish/LoadTest.exe
