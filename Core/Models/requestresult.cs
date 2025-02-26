@@ -1,6 +1,5 @@
-namespace Core.Models;
-
-class RequestResult {
+class RequestResult
+{
     public bool IsSuccessful { get; set; }
     public int StatusCode { get; set; }
     public long ResponseTime { get; set; }

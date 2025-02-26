@@ -1,6 +1,5 @@
-namespace Core.Models;
-
-class TestConfig {
+class TestConfig
+{
     public string Url { get; set; } = string.Empty;
     public int NumberOfRequests { get; set; }
     public int NumberOfConcurrentRequests { get; set; }
@@ -10,5 +9,4 @@ class TestConfig {
     public string Body { get; set; } = string.Empty;
     public int DelayBetweenRequestsMs { get; set; }
     public bool VerboseOutput { get; set; }
-
 }

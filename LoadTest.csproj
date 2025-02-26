@@ -8,11 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Console\" />
     <Folder Include="Core\Models\" />
     <Folder Include="Core\Utilities\" />
     <Folder Include="Core\Services\" />
-    <Folder Include="Config\" />
     <Folder Include="Plugins\" />
     <Folder Include="Tests\" />
     <Folder Include="Reports\" />
