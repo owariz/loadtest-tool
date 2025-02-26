@@ -46,6 +46,8 @@ class Program
                 return;
             }
 
+            await SelfUpdate.CheckForUpdates();
+
             using var client = HttpClientFactory.CreateHttpClient(config);
 
             ResultsReporter.PrintTestConfiguration(config);
