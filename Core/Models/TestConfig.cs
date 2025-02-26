@@ -1,7 +1,7 @@
 class TestConfig
 {
     public string Url { get; set; } = string.Empty;
-    public int NumberOfRequests { get; set; }
+    public int NumberOfRequests { get; set; } = int.MaxValue;
     public int NumberOfConcurrentRequests { get; set; }
     public int TimeoutSeconds { get; set; }
     public string Method { get; set; } = string.Empty;

@@ -41,7 +41,7 @@ static class CommandLineHelper
                         config.NumberOfRequests = num;
                     }
                     break;
-                case "-c":
+                case "-conc":
                 case "--concurrency":
                     if (i + 1 < args.Length && int.TryParse(args[++i], out int conc))
                     {
