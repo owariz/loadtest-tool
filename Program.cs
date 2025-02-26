@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 
+using Core.Models;
+
 class Program
 {
     static async Task Main(string[] args)
@@ -501,27 +503,4 @@ class Program
         double weight = index - lowerIndex;
         return (long)(sortedData[lowerIndex] * (1 - weight) + sortedData[upperIndex] * weight);
     }
-}
-
-class TestConfig
-{
-    public string Url { get; set; } = string.Empty;
-    public int NumberOfRequests { get; set; }
-    public int NumberOfConcurrentRequests { get; set; }
-    public int TimeoutSeconds { get; set; }
-    public string Method { get; set; } = string.Empty;
-    public Dictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
-    public string Body { get; set; } = string.Empty;
-    public int DelayBetweenRequestsMs { get; set; }
-    public bool VerboseOutput { get; set; }
-}
-
-class RequestResult
-{
-    public bool IsSuccessful { get; set; }
-    public int StatusCode { get; set; }
-    public long ResponseTime { get; set; }
-    public string ErrorMessage { get; set; } = string.Empty;
-    public bool IsTimeout { get; set; }
-    public long ContentLength { get; set; }
 }
