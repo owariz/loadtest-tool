@@ -16,12 +16,12 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # ตรวจสอบว่ามีการดึงโค้ดออกจาก repository
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.200'
+          dotnet-version: '9.0.200'  # ปรับเป็นเวอร์ชัน .NET ที่คุณใช้
 
       - name: Restore dependencies
         run: dotnet restore
@@ -42,6 +42,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Check out the code again (for tag creation)
+        uses: actions/checkout@v2  # ตรวจสอบว่ามีการดึงโค้ดออกจาก repository อีกครั้งเพื่อใช้ git
+
       - name: Create a tag
         run: |
           VERSION_TAG=$(git describe --tags --abbrev=0)  # ใช้ tag ล่าสุดจาก git
