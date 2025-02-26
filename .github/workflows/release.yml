@@ -38,10 +38,16 @@ jobs:
           name: LoadTestExe
           path: ./publish/LoadTest.exe
 
-  release:
+  create_release:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Create a tag
+        run: |
+          VERSION_TAG=$(git describe --tags --abbrev=0)  # ใช้ tag ล่าสุดจาก git
+          git tag -a "v$VERSION_TAG" -m "Release v$VERSION_TAG"
+          git push origin "v$VERSION_TAG"
+      
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         with:
