@@ -21,7 +21,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.200'
+          dotnet-version: '9.0.200'  # ปรับเป็นเวอร์ชัน .NET ที่คุณใช้
 
       - name: Restore dependencies
         run: dotnet restore
@@ -33,7 +33,7 @@ jobs:
         run: dotnet publish -c Release -r win-x64 --self-contained false --output ./publish
 
       - name: Archive the build output
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: LoadTestExe
           path: ./publish/LoadTest.exe
