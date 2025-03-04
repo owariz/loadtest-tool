@@ -17,6 +17,7 @@ class Program
 
         var config = new TestConfig
         {
+            Protocol = TestProtocol.Udp,
             NumberOfRequests = 100,
             NumberOfConcurrentRequests = 10,
             TimeoutSeconds = 10,
@@ -25,7 +26,7 @@ class Program
             Headers = new Dictionary<string, string>(),
             Body = string.Empty,
             DelayBetweenRequestsMs = 0,
-            VerboseOutput = false
+            VerboseOutput = true
         };
 
         try
