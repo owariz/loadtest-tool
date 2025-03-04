@@ -8,10 +8,16 @@ static class ResultsReporter
         Console.WriteLine($"│ {"Test Configuration:",-58} │");
         Console.WriteLine("├" + new string('─', 60) + "┤");
         Console.WriteLine($"│ {"Target URL:",-15} {config.Url,-42} │");
+        Console.WriteLine($"│ {"Protocol:",-15} {config.Protocol,-42} │");
         Console.WriteLine($"│ {"Method:",-15} {config.Method,-42} │");
         Console.WriteLine($"│ {"Total Requests:",-15} {config.NumberOfRequests,-42} │");
         Console.WriteLine($"│ {"Concurrency:",-15} {config.NumberOfConcurrentRequests,-42} │");
         Console.WriteLine($"│ {"Timeout:",-15} {config.TimeoutSeconds} sec{new string(' ', 36)} │");
+
+        if (config.Port > 0)
+        {
+            Console.WriteLine($"│ {"Port:",-15} {config.Port}{new string(' ', 40)} │");
+        }
 
         if (config.DelayBetweenRequestsMs > 0)
         {

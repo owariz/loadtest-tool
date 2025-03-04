@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using System.Net.Sockets;
+using System.Net;
 
 class Program
 {
@@ -17,7 +19,8 @@ class Program
 
         var config = new TestConfig
         {
-            Protocol = TestProtocol.Udp,
+            Protocol = TestProtocol.Http,
+            Port = 80,
             NumberOfRequests = 100,
             NumberOfConcurrentRequests = 10,
             TimeoutSeconds = 10,
@@ -26,7 +29,7 @@ class Program
             Headers = new Dictionary<string, string>(),
             Body = string.Empty,
             DelayBetweenRequestsMs = 0,
-            VerboseOutput = true
+            VerboseOutput = false
         };
 
         try
@@ -47,13 +50,62 @@ class Program
                 return;
             }
 
+            // Validate protocol-specific requirements
+            if (config.Protocol != TestProtocol.Http)
+            {
+                if (config.Port <= 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Port is required for {config.Protocol} protocol. Use -p or --port to specify the port.");
+                    Console.ResetColor();
+                    return;
+                }
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"Using {config.Protocol} protocol on port {config.Port}");
+                Console.ResetColor();
+            }
+
             await SelfUpdate.CheckForUpdates();
 
-            using var client = HttpClientFactory.CreateHttpClient(config);
+            // Create appropriate client based on protocol
+            object client;
+            switch (config.Protocol)
+            {
+                case TestProtocol.Http:
+                    client = HttpClientFactory.CreateHttpClient(config);
+                    break;
+                case TestProtocol.Tcp:
+                    client = new TcpClient();
+                    break;
+                case TestProtocol.Udp:
+                    client = new UdpClient();
+                    break;
+                default:
+                    throw new ArgumentException($"Unsupported protocol: {config.Protocol}");
+            }
 
             ResultsReporter.PrintTestConfiguration(config);
 
-            await LoadTestRunner.RunLoadTest(client, config);
+            // Run load test with appropriate client
+            if (client is HttpClient httpClient)
+            {
+                await LoadTestRunner.RunLoadTest(httpClient, config);
+            }
+            else if (client is TcpClient tcpClient)
+            {
+                await LoadTestRunner.RunLoadTest(tcpClient, config);
+            }
+            else if (client is UdpClient udpClient)
+            {
+                await LoadTestRunner.RunLoadTest(udpClient, config);
+            }
+
+            // Cleanup
+            if (client is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
         }
         catch (Exception ex)
         {
