@@ -2,28 +2,60 @@ using System.Collections.Concurrent;
 
 static class ResultsReporter
 {
+    private static class Border
+    {
+        public const string TopLeft = "┌";
+        public const string TopRight = "┐";
+        public const string BottomLeft = "└";
+        public const string BottomRight = "┘";
+        public const string Horizontal = "─";
+        public const string Vertical = "│";
+        public const string LeftT = "├";
+        public const string RightT = "┤";
+        public const string TopT = "┬";
+        public const string BottomT = "┴";
+        public const string Cross = "┼";
+    }
+
+    private static string CreateLine(int width) => Border.Horizontal.PadRight(width, '─');
+    private static string CreateHeader(string text, int width) =>
+        $"{Border.Vertical} {text.PadRight(width - 4)} {Border.Vertical}";
+
     public static void PrintTestConfiguration(TestConfig config)
     {
-        Console.WriteLine("╭" + new string('─', 60) + "╮");
-        Console.WriteLine($"│ {"Test Configuration:",-58} │");
-        Console.WriteLine("├" + new string('─', 60) + "┤");
-        Console.WriteLine($"│ {"Target URL:",-15} {config.Url,-42} │");
-        Console.WriteLine($"│ {"Method:",-15} {config.Method,-42} │");
-        Console.WriteLine($"│ {"Total Requests:",-15} {config.NumberOfRequests,-42} │");
-        Console.WriteLine($"│ {"Concurrency:",-15} {config.NumberOfConcurrentRequests,-42} │");
-        Console.WriteLine($"│ {"Timeout:",-15} {config.TimeoutSeconds} sec{new string(' ', 36)} │");
+        const int width = 80;
+        Console.WriteLine();
+        Console.WriteLine($"{Border.TopLeft}{CreateLine(width - 2)}{Border.TopRight}");
+        Console.WriteLine(CreateHeader("", width));
+        Console.WriteLine(CreateHeader("  🚀 Load Test Configuration", width));
+        Console.WriteLine(CreateHeader("", width));
+        Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
+        
+        Console.WriteLine(CreateHeader($"  {"Target URL:",-20} {config.Url}", width));
+        Console.WriteLine(CreateHeader($"  {"Protocol:",-20} {config.Protocol}", width));
+        Console.WriteLine(CreateHeader($"  {"Method:",-20} {config.Method}", width));
+        Console.WriteLine(CreateHeader($"  {"Total Requests:",-20} {config.NumberOfRequests}", width));
+        Console.WriteLine(CreateHeader($"  {"Concurrency:",-20} {config.NumberOfConcurrentRequests}", width));
+        Console.WriteLine(CreateHeader($"  {"Timeout:",-20} {config.TimeoutSeconds} seconds", width));
+
+        if (config.Port > 0)
+        {
+            Console.WriteLine(CreateHeader($"  {"Port:",-20} {config.Port}", width));
+        }
 
         if (config.DelayBetweenRequestsMs > 0)
         {
-            Console.WriteLine($"│ {"Delay:",-15} {config.DelayBetweenRequestsMs} ms{new string(' ', 37)} │");
+            Console.WriteLine(CreateHeader($"  {"Delay:",-20} {config.DelayBetweenRequestsMs} ms", width));
         }
 
-        Console.WriteLine("╰" + new string('─', 60) + "╯");
+        Console.WriteLine(CreateHeader("", width));
+        Console.WriteLine($"{Border.BottomLeft}{CreateLine(width - 2)}{Border.BottomRight}");
         Console.WriteLine();
     }
 
     public static void DisplayResults(ConcurrentBag<RequestResult> results, long totalTimeMs, int totalRequests)
     {
+        const int width = 80;
         var resultsList = results.ToList();
 
         int successfulRequests = resultsList.Count(r => r.IsSuccessful);
@@ -31,7 +63,6 @@ static class ResultsReporter
         int timeoutRequests = resultsList.Count(r => r.IsTimeout);
 
         double successRate = (double)successfulRequests / totalRequests * 100;
-
         long minResponseTime = resultsList.Any() ? resultsList.Min(r => r.ResponseTime) : 0;
         long maxResponseTime = resultsList.Any() ? resultsList.Max(r => r.ResponseTime) : 0;
         double avgResponseTime = resultsList.Any() ? resultsList.Average(r => r.ResponseTime) : 0;
@@ -44,44 +75,54 @@ static class ResultsReporter
 
         double requestsPerSecond = totalRequests / (totalTimeMs / 1000.0);
 
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("╭" + new string('─', 60) + "╮");
-        Console.WriteLine($"│ {"Test Results:",-58} │");
-        Console.WriteLine("├" + new string('─', 60) + "┤");
-        Console.ResetColor();
+        Console.WriteLine();
+        Console.WriteLine($"{Border.TopLeft}{CreateLine(width - 2)}{Border.TopRight}");
+        Console.WriteLine(CreateHeader("", width));
+        Console.WriteLine(CreateHeader("  📊 Test Results Summary", width));
+        Console.WriteLine(CreateHeader("", width));
+        Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
 
-        Console.WriteLine($"│ {"Total time:",-25} {totalTimeMs / 1000.0:F2} seconds{new string(' ', 20)} │");
-        Console.WriteLine($"│ {"Requests per second:",-25} {requestsPerSecond:F2} req/sec{new string(' ', 19)} │");
-        Console.WriteLine($"│ {"Total requests:",-25} {totalRequests}{new string(' ', 30)} │");
+        Console.WriteLine(CreateHeader($"  {"Total Duration:",-25} {totalTimeMs / 1000.0:F2} seconds", width));
+        Console.WriteLine(CreateHeader($"  {"Throughput:",-25} {requestsPerSecond:F2} req/sec", width));
+        Console.WriteLine(CreateHeader($"  {"Total Requests:",-25} {totalRequests:N0}", width));
+
+        Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
+        Console.WriteLine(CreateHeader("", width));
+        Console.WriteLine(CreateHeader("  📈 Response Statistics", width));
+        Console.WriteLine(CreateHeader("", width));
+        Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
+
+        Console.WriteLine(CreateHeader($"  {"Min Response Time:",-25} {minResponseTime:N0} ms", width));
+        Console.WriteLine(CreateHeader($"  {"Max Response Time:",-25} {maxResponseTime:N0} ms", width));
+        Console.WriteLine(CreateHeader($"  {"Average Response Time:",-25} {avgResponseTime:N2} ms", width));
+        Console.WriteLine(CreateHeader($"  {"50th Percentile (p50):",-25} {p50:N0} ms", width));
+        Console.WriteLine(CreateHeader($"  {"90th Percentile (p90):",-25} {p90:N0} ms", width));
+        Console.WriteLine(CreateHeader($"  {"95th Percentile (p95):",-25} {p95:N0} ms", width));
+        Console.WriteLine(CreateHeader($"  {"99th Percentile (p99):",-25} {p99:N0} ms", width));
+
+        Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
+        Console.WriteLine(CreateHeader("", width));
+        Console.WriteLine(CreateHeader("  🎯 Request Status", width));
+        Console.WriteLine(CreateHeader("", width));
+        Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
 
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"│ {"Successful requests:",-25} {successfulRequests} ({successRate:F1}%){new string(' ', 21)} │");
+        Console.WriteLine(CreateHeader($"  {"Successful Requests:",-25} {successfulRequests:N0} ({successRate:F1}%)", width));
         Console.ResetColor();
 
         if (failedRequests > 0)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"│ {"Failed requests:",-25} {failedRequests}{new string(' ', 33)} │");
+            Console.WriteLine(CreateHeader($"  {"Failed Requests:",-25} {failedRequests:N0}", width));
             Console.ResetColor();
         }
 
         if (timeoutRequests > 0)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"│ {"Timeout requests:",-25} {timeoutRequests}{new string(' ', 33)} │");
+            Console.WriteLine(CreateHeader($"  {"Timeout Requests:",-25} {timeoutRequests:N0}", width));
             Console.ResetColor();
         }
-
-        Console.WriteLine("├" + new string('─', 60) + "┤");
-        Console.WriteLine($"│ {"Response Time Statistics:",-58} │");
-        Console.WriteLine("├" + new string('─', 60) + "┤");
-        Console.WriteLine($"│ {"Min response time:",-25} {minResponseTime} ms{new string(' ', 26)} │");
-        Console.WriteLine($"│ {"Max response time:",-25} {maxResponseTime} ms{new string(' ', 26)} │");
-        Console.WriteLine($"│ {"Average response time:",-25} {avgResponseTime:F2} ms{new string(' ', 23)} │");
-        Console.WriteLine($"│ {"50th percentile (p50):",-25} {p50} ms{new string(' ', 26)} │");
-        Console.WriteLine($"│ {"90th percentile (p90):",-25} {p90} ms{new string(' ', 26)} │");
-        Console.WriteLine($"│ {"95th percentile (p95):",-25} {p95} ms{new string(' ', 26)} │");
-        Console.WriteLine($"│ {"99th percentile (p99):",-25} {p99} ms{new string(' ', 26)} │");
 
         var statusCodeGroups = resultsList
             .GroupBy(r => r.StatusCode)
@@ -90,9 +131,11 @@ static class ResultsReporter
 
         if (statusCodeGroups.Any())
         {
-            Console.WriteLine("├" + new string('─', 60) + "┤");
-            Console.WriteLine($"│ {"Status Code Distribution:",-58} │");
-            Console.WriteLine("├" + new string('─', 60) + "┤");
+            Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
+            Console.WriteLine(CreateHeader("", width));
+            Console.WriteLine(CreateHeader("  📊 Status Code Distribution", width));
+            Console.WriteLine(CreateHeader("", width));
+            Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
 
             foreach (var group in statusCodeGroups)
             {
@@ -100,28 +143,17 @@ static class ResultsReporter
                 int count = group.Count();
                 double percentage = (double)count / totalRequests * 100;
 
-                if (group.Key >= 200 && group.Key < 300)
+                ConsoleColor color = group.Key switch
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                }
-                else if (group.Key >= 300 && group.Key < 400)
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                }
-                else if (group.Key >= 400 && group.Key < 500)
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                }
-                else if (group.Key >= 500)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
+                    >= 200 and < 300 => ConsoleColor.Green,
+                    >= 300 and < 400 => ConsoleColor.Cyan,
+                    >= 400 and < 500 => ConsoleColor.Yellow,
+                    >= 500 => ConsoleColor.Red,
+                    _ => ConsoleColor.Gray
+                };
 
-                Console.WriteLine($"│ {"HTTP " + statusCode + ":",-25} {count} ({percentage:F1}%){new string(' ', 23)} │");
+                Console.ForegroundColor = color;
+                Console.WriteLine(CreateHeader($"  {"HTTP " + statusCode + ":",-25} {count:N0} ({percentage:F1}%)", width));
                 Console.ResetColor();
             }
         }
@@ -134,25 +166,28 @@ static class ResultsReporter
                 .OrderByDescending(g => g.Count())
                 .Take(3);
 
-            Console.WriteLine("├" + new string('─', 60) + "┤");
-            Console.WriteLine($"│ {"Common Errors:",-58} │");
-            Console.WriteLine("├" + new string('─', 60) + "┤");
+            Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
+            Console.WriteLine(CreateHeader("", width));
+            Console.WriteLine(CreateHeader("  ⚠️ Common Errors", width));
+            Console.WriteLine(CreateHeader("", width));
+            Console.WriteLine($"{Border.LeftT}{CreateLine(width - 2)}{Border.RightT}");
 
             foreach (var group in errorGroups)
             {
                 string message = group.Key;
-                if (message.Length > 50)
+                if (message.Length > width - 20)
                 {
-                    message = message.Substring(0, 47) + "...";
+                    message = message.Substring(0, width - 23) + "...";
                 }
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"│ {message,-58} │");
+                Console.WriteLine(CreateHeader($"  {message}", width));
                 Console.ResetColor();
             }
         }
 
-        Console.WriteLine("╰" + new string('─', 60) + "╯");
+        Console.WriteLine($"{Border.BottomLeft}{CreateLine(width - 2)}{Border.BottomRight}");
+        Console.WriteLine();
     }
 
     static long CalculatePercentile(List<long> sortedData, int percentile)

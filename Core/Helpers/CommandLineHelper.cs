@@ -13,12 +13,16 @@ static class CommandLineHelper
         Console.WriteLine("  -H, --header <header>     Add header (format: 'key:value')");
         Console.WriteLine("  -d, --data <data>         Request body data");
         Console.WriteLine("  --delay <milliseconds>    Delay between requests in milliseconds (default: 0)");
+        Console.WriteLine("  -pt, --port <port>        Port number (required for TCP/UDP)");
+        Console.WriteLine("  --protocol <protocol>     Protocol to use (http/tcp/udp, default: http)");
         Console.WriteLine("  -v, --verbose             Verbose output");
         Console.WriteLine("  -h, --help                Show this help message");
         Console.WriteLine();
         Console.WriteLine("Examples:");
         Console.WriteLine("  LoadTest -u https://example.com -n 1000 -conc 20");
-        Console.WriteLine("  LoadTest -u 192.168.1.1:8080 -n 500 -c 50 -m POST -H \"Content-Type:application/json\" -d \"{\\\"key\\\":\\\"value\\\"}\"");
+        Console.WriteLine("  LoadTest -u 192.168.1.1 -pt 8080 --protocol tcp -n 500 -conc 50");
+        Console.WriteLine("  LoadTest -u example.com -pt 8080 --protocol udp -n 1000");
+        Console.WriteLine("  LoadTest -u example.com -n 500 -c 50 -m POST -H \"Content-Type:application/json\" -d \"{\\\"key\\\":\\\"value\\\"}\"");
     }
 
     public static void ProcessArguments(string[] args, TestConfig config)
@@ -89,6 +93,19 @@ static class CommandLineHelper
                         config.DelayBetweenRequestsMs = delay;
                     }
                     break;
+                case "-pt":
+                case "--port":
+                    if (i + 1 < args.Length && int.TryParse(args[++i], out int port))
+                    {
+                        config.Port = port;
+                    }
+                    break;
+                case "--protocol":
+                    if (i + 1 < args.Length)
+                    {
+                        config.Protocol = ParseProtocol(args[++i]);
+                    }
+                    break;
                 case "-v":
                 case "--verbose":
                     config.VerboseOutput = true;
@@ -109,5 +126,16 @@ static class CommandLineHelper
         }
 
         return "http://" + input;
+    }
+
+    static TestProtocol ParseProtocol(string protocol)
+    {
+        return protocol.ToLower() switch
+        {
+            "http" => TestProtocol.Http,
+            "tcp" => TestProtocol.Tcp,
+            "udp" => TestProtocol.Udp,
+            _ => throw new ArgumentException($"Unsupported protocol: {protocol}. Supported protocols are: http, tcp, udp")
+        };
     }
 }
