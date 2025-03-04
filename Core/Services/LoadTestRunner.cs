@@ -106,15 +106,8 @@ static class LoadTestRunner
 
     public static async Task RunLoadTest(object client, TestConfig config)
     {
-        if (client == null)
-        {
-            throw new ArgumentNullException(nameof(client));
-        }
-
-        if (config == null)
-        {
-            throw new ArgumentNullException(nameof(config));
-        }
+        ArgumentNullException.ThrowIfNull(client, nameof(client));
+        ArgumentNullException.ThrowIfNull(config, nameof(config));
 
         Console.WriteLine("⚡ Starting load test...");
 
@@ -198,17 +191,10 @@ static class LoadTestRunner
         ResultsReporter.DisplayResults(results, stopwatch.ElapsedMilliseconds, config.NumberOfRequests);
     }
 
-    static async Task<RequestResult> SendRequest(object client, TestConfig config)
+    public static async Task<RequestResult> SendRequest(object client, TestConfig config)
     {
-        if (client == null)
-        {
-            throw new ArgumentNullException(nameof(client));
-        }
-
-        if (config == null)
-        {
-            throw new ArgumentNullException(nameof(config));
-        }
+        ArgumentNullException.ThrowIfNull(client, nameof(client));
+        ArgumentNullException.ThrowIfNull(config, nameof(config));
 
         return client switch
         {
@@ -219,17 +205,10 @@ static class LoadTestRunner
         };
     }
 
-    static async Task<RequestResult> SendHttpRequest(HttpClient client, TestConfig config)
+    public static async Task<RequestResult> SendHttpRequest(HttpClient client, TestConfig config)
     {
-        if (client == null)
-        {
-            throw new ArgumentNullException(nameof(client));
-        }
-
-        if (config == null)
-        {
-            throw new ArgumentNullException(nameof(config));
-        }
+        ArgumentNullException.ThrowIfNull(client, nameof(client));
+        ArgumentNullException.ThrowIfNull(config, nameof(config));
 
         var result = new RequestResult();
         var requestStopwatch = new Stopwatch();
@@ -299,17 +278,10 @@ static class LoadTestRunner
         return result;
     }
 
-    static async Task<RequestResult> SendTcpRequest(TcpClient client, TestConfig config)
+    public static async Task<RequestResult> SendTcpRequest(TcpClient client, TestConfig config)
     {
-        if (client == null)
-        {
-            throw new ArgumentNullException(nameof(client));
-        }
-
-        if (config == null)
-        {
-            throw new ArgumentNullException(nameof(config));
-        }
+        ArgumentNullException.ThrowIfNull(client, nameof(client));
+        ArgumentNullException.ThrowIfNull(config, nameof(config));
 
         var result = new RequestResult();
         var requestStopwatch = new Stopwatch();
@@ -388,17 +360,10 @@ static class LoadTestRunner
         return result;
     }
 
-    static async Task<RequestResult> SendUdpRequest(UdpClient client, TestConfig config)
+    public static async Task<RequestResult> SendUdpRequest(UdpClient client, TestConfig config)
     {
-        if (client == null)
-        {
-            throw new ArgumentNullException(nameof(client));
-        }
-
-        if (config == null)
-        {
-            throw new ArgumentNullException(nameof(config));
-        }
+        ArgumentNullException.ThrowIfNull(client, nameof(client));
+        ArgumentNullException.ThrowIfNull(config, nameof(config));
 
         var result = new RequestResult();
         var requestStopwatch = new Stopwatch();
